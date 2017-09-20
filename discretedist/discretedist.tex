@@ -1,0 +1,200 @@
+\documentclass{ximera}
+      
+\title{Discrete Distributions}
+      
+\begin{document}
+      
+\begin{abstract}
+      
+In this activity, we find basic facts about discrete distributions.
+      
+\end{abstract}
+      
+\maketitle
+      
+ 
+\begin{enumerate}
+\item Consider the probability distribution:
+
+$$\begin{array}{c|cccc}
+x & 1 & 2 & 3 & 4\\
+\hline
+P(X=x) & 0.25 & 0.13 & 0.36 & 0.26
+\end{array}$$
+Find the following:
+
+\begin{enumerate}
+\item The Expected Value.  $E(X)=\answer{2.63}$ (round to 4 decimal places if necessary)
+\item The Variance of the distribution.  $Var=\answer{1.2531}$ (round to 4 decimal places if necessary)
+\item The Standard Deviation of the distribution. $\sigma=\answer{1.1194}$  (round to 4 decimal places if necessary)
+\end{enumerate}
+
+When doing this problem, consider using the following SageCell:
+
+\begin{sageCell}
+#Enter as a list of pairs each (x, p(x))
+List=[(1, 0.25), (2, 0.13), (3, .36), (4, 0.26)] 
+
+# NO NEED TO EDIT AFTER THIS LINE!!!
+
+dummy=0
+totalprob=0
+
+for i in range(len(List)):
+    totalprob=totalprob+List[i][1]
+    if List[i][1]<0 or List[i][1]>1:
+        dummy=1
+
+if dummy==1 or totalprob!=1:
+    print('This does not represent a probability distribution!')
+else:
+    EVX=0
+    EVXs=0
+    for i in range(len(List)):
+        EVX=EVX+List[i][0]*List[i][1]
+        EVXs=EVXs+List[i][0]^2*List[i][1]
+    Var=EVXs-EVX^2
+    std=(Var)^(.5)
+    print('The expected value is '+`EVX`)
+    print('The variance is '+`Var`)
+    print('The standard deviation is '+`std`)
+\end{sageCell}
+
+We enter in each possible $x$ value, and it's associated probability as an ordered pair $(x, P(X=x))$.  When you hit run, we see the outputs of our function!
+
+See if you can use this for the following distribution:
+
+\item Consider the probability distribution:
+
+$$\begin{array}{c|ccc}
+x & -20 &  100 & 1000\\
+\hline
+P(X=x) & 0.95 & 0.04  & 0.01
+\end{array}$$
+Find the following:
+
+\begin{enumerate}
+\item The Expected Value.  $E(X)=\answer{-5}$ (round to 4 decimal places if necessary)
+\item The Variance of the distribution.  $Var=\answer{10755}$ (round to 4 decimal places if necessary)
+\item The Standard Deviation of the distribution. $\sigma=\answer{103.763}$  (round to 4 decimal places if necessary)
+\end{enumerate}
+
+How should we adjust List above to do this problem?
+
+\begin{hint}
+\begin{verbatim}
+List=[(-20, 0.95), (100, 0.04), (1000, .01)]
+\end{verbatim}
+\end{hint}
+
+\item Which of the following are legitimate probability distribution tables?
+
+\begin{selectAll}
+\choice[correct]:
+$$\begin{array}{c|cccc}
+x & 1 & 10 &  100 & 1000\\
+\hline
+P(X=x) & 0.90 & 0.02  & 0.01 & 0.02
+\end{array}$$
+
+\choice[correct]:
+$$\begin{array}{c|cccc}
+x & -1 & 2 &  -3 & 4\\
+\hline
+P(X=x) & 0.25 & 0.25  & 0.25 & 0.25
+\end{array}$$
+
+\choice:
+
+$$\begin{array}{c|ccccc}
+x & 1 & 2 &  3 & 4 & 5\\
+\hline
+P(X=x) & 0.05 & 0.25  & 0.18 & 0.30 & 0.20
+\end{array}$$
+
+
+
+\end{selectAll}
+
+
+\item  Consider the probability distribution:
+
+$$\begin{array}{c|ccccc}
+x & 1 & 2 &  3 & 4 & 5\\
+\hline
+P(X=x) & 0.15 & 0.25  & 0.15 & 0.25 & 0.20
+\end{array}$$
+Find the following:
+
+\begin{enumerate}
+\item The Expected Value.  $E(X)=\answer{3.1}$ (round to 4 decimal places if necessary)
+\item The Variance of the distribution.  $Var=\answer{1.89}$ (round to 4 decimal places if necessary)
+\item The Standard Deviation of the distribution. $\sigma=\answer{1.3748}$  (round to 4 decimal places if necessary)
+\end{enumerate}
+
+\item Suppose I play the following game of chance:  I roll a dice, and if I get a 5 or a 6, I win \$5.  It costs \$2 to play.  Let $X$ denote my net winnings.
+
+\begin{enumerate}
+\item Which of the following represents the probability distribution table for $X$?
+
+\begin{multipleChoice}
+\choice:  
+$$\begin{array}{c|cccccc}
+x & 1 & 2 &  3 & 4 & 5 & 6\\
+\hline
+P(X=x) & 1/6 & 1/6  & 1/6 & 1/6 & 1/6 & 1/6
+\end{array}$$
+
+\choice:
+
+$$\begin{array}{c|cc}
+x & 0 & 5 \\
+\hline
+P(X=x) & 4/6 & 2/6  
+\end{array}$$
+
+\choice:
+
+$$\begin{array}{c|cc}
+x & -2 & 5 \\
+\hline
+P(X=x) & 4/6 & 2/6  
+\end{array}$$
+
+\choice[correct]:
+
+$$\begin{array}{c|cc}
+x & -2 & 3 \\
+\hline
+P(X=x) & 4/6 & 2/6  
+\end{array}$$
+
+
+
+\end{multipleChoice}
+
+\item What are my expected net winnings if I play?  $\$\answer{-0.3333}$ (round to 4 decimal places if necessary)
+
+\end{enumerate}
+
+
+
+
+\end{enumerate}
+
+
+
+
+
+ 
+ 
+ 
+ 
+      
+
+
+
+
+
+
+\end{document}

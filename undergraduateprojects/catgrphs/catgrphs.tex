@@ -1,0 +1,538 @@
+\documentclass{ximera}
+      
+\title{Limits and Co-Limits of the Category Grphs}
+      
+\begin{document}
+      
+\begin{abstract}
+      
+In this research, we studied the basics of Category Theory and Graph Theory. In particular, we studied the basic limits of a category (product, co-product, equalizer, and co-equalizer) mainly in the category of sets (\textbf{Set}). We then studied these limits in the category of graphs (\textbf{Grphs}) (vowel omitted by convention). Finally, Sage was implemented to quickly compute these limits.      
+\end{abstract}
+      
+\maketitle
+
+\textbf{Visualizing Graphs}      
+
+ To start with, let's simply visualize some graphs.  Above we have graphs $G$ and $H$.  By clicking execute, you can see what those graphs look like.
+
+ You may add/delete edges and by extension vertices by adjusting the pairs in the lists.  For example:
+
+\begin{verbatim}
+H = Graph([(1, 2), (2, 3), (3, 4), (4, 1) ])
+\end{verbatim}
+
+will turn $H$ into a 4-cycle with edges following "sequentially".     
+
+\begin{sageCell}
+G = Graph([('a', 'b'),('b', 'c'), ('b', 'd')])
+H = Graph([(1, 2), (2, 3) ])
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#PLEASE DO NOT EDIT ANYTHING AFTER THIS LINE!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+print("\n\n Graph G \n")
+G.show()
+
+print("\n\n Graph H \n\n")
+H.show()
+\end{sageCell}
+
+
+\textbf{Products and CoProducts}
+
+Next, we have the limit Product and colimit CoProduct.  Again simply modify G and H to your liking (as above) and hit run to see what the Product and Coproduct look like!
+
+
+\begin{sageCell}
+#Graphs G and H
+G = Graph([('a', 'b'),('b', 'c'), ('d','a'), ('b', 'd')])
+H = Graph([(1, 2), (2, 3) ])
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#PLEASE DO NOT EDIT ANYTHING AFTER THIS LINE!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+print("\n\n Graph G \n")
+G.show()
+
+
+print("\n\n Graph H \n\n")
+H.show()
+
+#Prints the Product and Coproduct
+print("Grphs product of G and H")
+Prod = G.strong_product(H); Prod.show()
+
+print("Grphs co-product of G and H")
+Coprod = G.disjoint_union(H); Coprod.show()
+
+\end{sageCell}
+
+\textbf{The Hom Sets}
+
+You may again edit graphs $G$ and $H$.   Here, $G$ represents a domain graph and $H$ a codomain graph.  The code takes all possible functions from the vertices and edges of $G$ to the vertices and edges of $H$, and identify those that represent legitimate graph morphisms.  This is Hom$(G, H)$.  We also identify the subset of strict graph morphisms.  This is HomSt$(G,H)$.
+
+
+\begin{sageCell}
+#Graphs G and H, G is the Domain, H is the coDomain
+G = Graph([('a', 'b'),('b', 'c'), ('b', 'd')]); 
+H = Graph([(1, 2), (2, 3) ]); 
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#PLEASE DO NOT EDIT ANYTHING AFTER THIS LINE
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+print("\n\n Graph G \n")
+G.show()
+
+
+
+print("\n\n Graph H \n\n")
+H.show()
+
+
+Pg = Set (G.vertices() + G.edges(labels=False)); 
+
+
+Ph = Set (H.vertices() + H.edges(labels=False)); 
+
+X = FiniteSetMaps(Pg, Ph); 
+
+Z = Set(X)
+
+HomS = Set([]); 
+
+for f in Z:
+    s = True
+
+#Checking whether f is a graph morphism (vertices)
+
+    for j in G.vertices():
+        if f(j)in H.vertices():
+            s=s and True
+        else:
+            s=s and False
+
+
+#Checking whether f is a graph morphism (edges)
+
+    for i in G.edges(labels=False):
+        u=i[0];
+        v=i[1];
+        if f(u)==f(v) and f(u)==f(i):
+            s=s and True
+        elif f(i)in H.edges(labels=False):
+            z=f(i);
+            if (z[0]==f(u) and z[1]==f(v)) or (z[1]==f(u) and z[0]==f(v)):
+                s=s and True
+            else:
+                s=s and False
+        else: s=s and False
+
+#Adds f to HomS if f is a morphism
+    if s==True:
+        HomS = HomS + Set([f])
+
+#We now display Hom(G, H)
+
+print("\n\n Hom(G, H) \n\n")
+
+
+for j in HomS:
+    print j
+
+#Creating the Strict Homset
+
+HomSt = Set([])
+
+for g in HomS:
+    s = True
+    for v in G.edges(labels=false):
+        if g(v) in H.vertices():
+            s = False
+    if s == True:
+        HomSt = HomSt + Set([g])
+
+#Displaying the Strict Homset
+
+print("\n\n HomSt(G, H) \n\n")
+
+
+for j in HomSt:
+    print j
+\end{sageCell}
+
+
+\textbf{Randomized Equalizer and CoEqualizer}
+
+Once again edit $G$ and $H$ to your liking, they are again the domain and codomain.  The code takes two random morphisms from Hom$(G, H)$ and creates the Equalizer limit and CoEqualizer colimit.
+
+
+\begin{sageCell}
+#Graphs G and H  G is the Domain, H is the coDomain.
+G = Graph([('a', 'b'),('b', 'c'), ('b','d')])
+H = Graph([(1, 2), (2, 3) ])
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#PLEASE DO NOT EDIT ANYTHING AFTER THIS LINE!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+print("\n\n Graph G \n")
+G.show()
+
+
+
+print("\n\n Graph H \n\n")
+H.show()
+
+#Creating the Part Sets for each graph
+
+
+Pg = Set (G.vertices() + G.edges(labels=False)); 
+
+
+Ph = Set (H.vertices() + H.edges(labels=False)); 
+
+X = FiniteSetMaps(Pg, Ph); 
+
+Z = Set(X)
+
+HomS = Set([]); 
+
+for f in Z:
+    s = True
+
+#Checking whether f is a graph morphism (vertices)
+
+    for j in G.vertices():
+        if f(j)in H.vertices():
+            s=s and True
+        else:
+            s=s and False
+
+
+#Checking whether f is a graph morphism (edges)
+
+    for i in G.edges(labels=False):
+        u=i[0];
+        v=i[1];
+        if f(u)==f(v) and f(u)==f(i):
+            s=s and True
+        elif f(i)in H.edges(labels=False):
+            z=f(i);
+            if (z[0]==f(u) and z[1]==f(v)) or (z[1]==f(u) and z[0]==f(v)):
+                s=s and True
+            else:
+                s=s and False
+        else: s=s and False
+
+#Adds f to HomS if f is a morphism
+    if s==True:
+        HomS = HomS + Set([f])
+
+#Picking Random Morphisms
+
+Homfg = FiniteEnumeratedSet(HomS)
+
+f = Homfg.random_element()
+print("\n\n Morphism f \n\n")
+f
+g = Homfg.random_element()
+print("\n\n Morphism g \n\n")
+g
+
+
+
+
+
+#Eq is the equalizer graph
+
+Eq = Graph()
+
+#Creating the equalizer
+
+
+for j in G.vertices():
+    if f(j)==g(j):
+        Eq.add_vertex(j)
+
+
+for j in G.edges(labels=False):
+    u=j[0]
+    v=j[1]
+    if f(j)==g(j) and j[0] in Eq.vertices() and j[1] in Eq.vertices():
+        Eq.add_edge(j)
+
+
+print("\n\n Graph Eq \n\n")
+
+Eq.show()
+
+#Coeq is the co-equalizer graph
+
+Coeq = Graph(multiedges=True, loops=True)
+
+Gdone = Set([])
+Hdone = Set([])
+
+for p in H.vertices():
+    if p not in Hdone:
+        Gtemp=Set([])
+        Htemp=Set([p])
+        s = False
+        while s == False:
+            Gcheck=Gtemp
+            Hcheck=Htemp
+            for x in Pg:
+                if f(x) in Htemp:
+                    Gtemp = Gtemp + Set([x])
+                if g(x) in Htemp:
+                    Gtemp = Gtemp + Set([x])
+            for p in Gtemp:
+                Htemp = Htemp + Set([f(p), g(p)])
+
+            if (Gtemp == Gcheck) and (Htemp == Hcheck):
+                s = True
+                Gdone = Gdone + Gtemp
+                Hdone = Hdone + Htemp
+                Coeq.add_vertex(Htemp)
+
+
+for p in H.edges(labels=False):
+    if p not in Hdone:
+        Gtemp=Set([])
+        Htemp=Set([p])
+        s = False
+        while s == False:
+            Gcheck=Gtemp
+            Hcheck=Htemp
+            for x in Pg:
+                if f(x) in Htemp:
+                    Gtemp = Gtemp + Set([x])
+                if g(x) in Htemp:
+                    Gtemp = Gtemp + Set([x])
+            for p in Gtemp:
+                Htemp = Htemp + Set([f(p), g(p)])
+
+            if (Gtemp == Gcheck) and (Htemp == Hcheck):
+                s = True
+                Gdone = Gdone + Gtemp
+                Hdone = Hdone + Htemp
+                e=Htemp[0]
+                for v in Coeq.vertices():
+                    if e[0] in v:
+                        a = v
+                    if e[1] in v:
+                        b = v
+                Coeq.add_edge(a, b, Htemp)
+
+
+print("\n\n Graph Coeq \n\n")
+
+Coeq.show()
+\end{sageCell}
+
+
+\textbf{Equalizer and CoEqualizer}
+
+Finally, you may choose your own $f$ and $g$ as well as $G$ and $H$.  Use the format as follows.
+
+Suppose:
+
+\begin{verbatim}
+G = Graph([('a', 'b'),('b', 'c'), ('b', 'd')])
+H = Graph([(1, 2), (2, 3) ])
+\end{verbatim}
+
+Then:
+
+\begin{verbatim}
+f = X.from_dict({'a':1, 'b':2, 'c':3, 'd':3, ('a', 'b'):(1, 2), ('b', 'c'):(2, 3), ('b', 'd'):(2, 3)}); 
+\end{verbatim}
+
+Is a morphism from $G$ to $H$, that maps vertices $a\to1, b\to2, c,d\to3$ and edges $(a,b)\to(1,2)$ and $(b,c), (b,d)\to(2,3)$.  Another example:
+
+\begin{verbatim}
+g = X.from_dict({'a':1, 'b':2, 'c':1, 'd':3, ('a', 'b'):(1, 2), ('b', 'c'):(1, 2), ('b', 'd'):(2, 3)}); 
+\end{verbatim}
+
+Is a morphism from G to H, that maps vertices $a, c\to1, b\to2, d\to3$ and edges $(a,b), (b,c)\to$(1,2) and $(b,d)\to(2,3)$.
+
+Again the code generates the Equalizer and CoEqualizer.  If your functions do not indicate legitimate morphisms, a message will display.
+
+
+\begin{sageCell}
+?b8a68cda-b183-4c89-a809-30655ad4ccca?
+import sys
+from sage.all import *
+
+#Graphs G and H  G is the Domain, H is the coDomain.
+G = Graph([('a', 'b'),('b', 'c'), ('b', 'd')])
+H = Graph([(1, 2), (2, 3) ])
+
+##DO NOT EDIT THESE 3 LINES
+Pg = Set (G.vertices() + G.edges(labels=False));
+Ph = Set (H.vertices() + H.edges(labels=False));
+X = FiniteSetMaps(Pg, Ph)
+##DO NOT EDIT THE ABOVE 3 LINES
+
+
+f = X.from_dict({'a':1, 'b':2, 'c':3, 'd':3, ('a', 'b'):(1, 2), ('b', 'c'):(2, 3), ('b', 'd'):(2, 3)}); 
+
+
+g = X.from_dict({'a':1, 'b':2, 'c':1, 'd':3, ('a', 'b'):(1, 2), ('b', 'c'):(1, 2), ('b', 'd'):(2, 3)}); 
+
+
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#PLEASE DO NOT EDIT ANYTHING AFTER THIS LINE!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+print("\n\n Graph G \n")
+G.show()
+
+
+
+print("\n\n Graph H \n\n")
+H.show()
+
+
+s = True
+
+#Checking whether f and g are graph morphisms (vertices) It seems like this only checks if f is a graph morphism rather than g. - Dr. C
+
+for j in G.vertices():
+    if f(j)in H.vertices():
+        s=s and True
+    else:
+        s=s and False
+
+
+#Checking whether f and g are graph morphisms (edges).
+
+for i in G.edges(labels=False):
+    u=i[0];
+    v=i[1];
+    if f(u)==f(v) and f(u)==f(i):
+        s=s and True
+    elif f(i)in H.edges(labels=False):
+        z=f(i)
+        if (z[0]==f(u) and z[1]==f(v)) or (z[1]==f(u) and z[0]==f(v)):
+            s=s and True
+        else:
+            s=s and False
+    else: s=s and False
+
+print("\n\n Are f and g Graph Morphism? (T/F) \n\n"); s
+
+
+#Breaks the program if it is not a graph morphism
+
+if s == False:
+   quit("Not a Morphism")
+
+#Eq is the equalizer graph
+
+Eq = Graph()
+
+#Creating the equalizer
+
+
+for j in G.vertices():
+    if f(j)==g(j):
+        Eq.add_vertex(j)
+
+
+for j in G.edges(labels=False):
+    u=j[0]
+    v=j[1]
+    if f(j)==g(j) and j[0] in Eq.vertices() and j[1] in Eq.vertices():
+        Eq.add_edge(j)
+
+
+print("\n\n Graph Eq \n\n")
+Eq.show()
+
+
+#Coeq is the co-equalizer graph
+
+Coeq = Graph(multiedges=True, loops=True)
+
+Gdone = Set([])
+Hdone = Set([])
+
+for p in H.vertices():
+    if p not in Hdone:
+        Gtemp=Set([])
+        Htemp=Set([p])
+        s = False
+        while s == False:
+            Gcheck=Gtemp
+            Hcheck=Htemp
+            for x in Pg:
+                if f(x) in Htemp:
+                    Gtemp = Gtemp + Set([x])
+                if g(x) in Htemp:
+                    Gtemp = Gtemp + Set([x])
+            for p in Gtemp:
+                Htemp = Htemp + Set([f(p), g(p)])
+
+            if (Gtemp == Gcheck) and (Htemp == Hcheck):
+                s = True
+                Gdone = Gdone + Gtemp
+                Hdone = Hdone + Htemp
+                Coeq.add_vertex(Htemp)
+
+
+for p in H.edges(labels=False):
+    if p not in Hdone:
+        Gtemp=Set([])
+        Htemp=Set([p])
+        s = False
+        while s == False:
+            Gcheck=Gtemp
+            Hcheck=Htemp
+            for x in Pg:
+                if f(x) in Htemp:
+                    Gtemp = Gtemp + Set([x])
+                if g(x) in Htemp:
+                    Gtemp = Gtemp + Set([x])
+            for p in Gtemp:
+                Htemp = Htemp + Set([f(p), g(p)])
+
+            if (Gtemp == Gcheck) and (Htemp == Hcheck):
+                s = True
+                Gdone = Gdone + Gtemp
+                Hdone = Hdone + Htemp
+                e=Htemp[0]
+                for v in Coeq.vertices():
+                    if e[0] in v:
+                        a = v
+                    if e[1] in v:
+                        b = v
+                Coeq.add_edge(a, b, Htemp)
+
+
+print("\n\n Graph CoEq \n\n")
+Coeq.show()
+\end{sageCell}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
